@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devos</title>
+  <style>
+    :root {
+      --bg-color: #0b0f17;
+      --card-bg: #161b26;
+      --border-color: #232a3b;
+      --text-main: #f0f4f8;
+      --text-muted: #8b98a5;
+      --accent-color: #0088ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Moving dots animation */
+    .status-text {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .dots::after {
+      content: '.';
+      animation: animated-dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes animated-dots {
+      0%   { content: ''; }
+      25%  { content: '.'; }
+      50%  { content: '..'; }
+      75%  { content: '...'; }
+      100% { content: ''; }
+    }
+
+    .project-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .info-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .label {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .value {
+      font-family: monospace;
+      font-size: 0.95rem;
+      color: var(--accent-color);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Replace logo.png with your actual logo file name -->
+    <img src="logo.png" alt="Devos Logo" class="logo">
+    
+    <div class="status-text">Still Building<span class="dots"></span></div>
+    <div class="project-title">Devos</div>
+
+    <div class="info-card">
+      <div class="info-group">
+        <span class="label">IP Address</span>
+        <span class="value" id="ip">Fetching...</span>
+      </div>
+
+      <div class="info-group">
+        <span class="label">Location</span>
+        <span class="value" id="location">Fetching...</span>
+      </div>
+
+      <div class="info-group">
+        <span class="label">ISP / Network</span>
+        <span class="value" id="isp">Fetching...</span>
+      </div>
+
+      <div class="info-group">
+        <span class="label">Platform</span>
+        <span class="value" id="platform">Fetching...</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('platform').textContent = navigator.platform || "Unknown";
+
+    async function getVisitorInfo() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        if (!response.ok) throw new Error('API Error');
+        const data = await response.json();
+
+        document.getElementById('ip').textContent = data.ip || 'Unavailable';
+        document.getElementById('location').textContent = `${data.city || ''}, ${data.country_name || ''}`;
+        document.getElementById('isp').textContent = data.org || 'Unavailable';
+      } catch (error) {
+        document.getElementById('ip').textContent = 'Error loading';
+        document.getElementById('location').textContent = 'Error loading';
+        document.getElementById('isp').textContent = 'Error loading';
+      }
+    }
+
+    getVisitorInfo();
+  </script>
+</body>
+</html>
